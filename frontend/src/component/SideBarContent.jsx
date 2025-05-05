@@ -1,4 +1,3 @@
-
 import { Box, Button , styled , List , ListItem} from "@mui/material";
 import CreateIcon from '@mui/icons-material/Create';
 import { SIDEBAR_DATA } from "../config/sidebar.config";
@@ -21,8 +20,20 @@ const Container = styled(Box)`
             text-decoration: none;
             color: inherit;
         }
-        & > a > li > svg {
-            margin-right: 20px;
+        & > a > li {
+            display: flex;
+            align-items: center;
+            height: 40px;
+            padding: 0 16px;
+            margin-bottom: 4px;
+            border-radius: 0 20px 20px 0;
+            transition: background-color 0.2s;
+            &:hover {
+                background-color: #f5f5f5;
+            }
+            & > svg {
+                margin-right: 20px;
+            }
         }
     }
 `
