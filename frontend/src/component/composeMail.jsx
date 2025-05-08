@@ -8,7 +8,8 @@ import {styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { Box } from '@mui/material';
 import { useState } from 'react';
-
+import useApi from '../hooks/useApi';
+import { API_URL } from '../service/api.url';
     const dialogStyle = {
         width:"80%",
         height:"90%",
@@ -52,6 +53,12 @@ const SendButton = styled(Button)`
     width: 100px;
 `
 const ComposeMail = ({openDialog,setOpenDialog}) => {
+    const [data, setData] = useState({
+        to: "",
+        subject: "",
+        body: ""
+    })
+    const sentEmailService = useApi(API_URL.saveSentEmail)
    
 
     const config ={
@@ -82,14 +89,29 @@ const ComposeMail = ({openDialog,setOpenDialog}) => {
           message => alert(message)
         ); 
     }
+    const payload = {
+        to:data.to,
+        from:"smilejack42@gmail.com",
+        subject:data.subject,
+        body:data.body,
+        date:new Date(),
+        image:"",
+        name:"code with shaswat",
+        isStarred:false,
+        type:"sent"
+       
+    }
+    sentEmailService.call(payload)
+
+    if(!sentEmailService.error){
+        setOpenDialog(false)
+        setData({})
+    }else {
+
+    }
    
         setOpenDialog(false);
 }
-const [data, setData] = useState({
-    to: "",
-    subject: "",
-    body: ""
-})
 const onValueChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value })
 }
