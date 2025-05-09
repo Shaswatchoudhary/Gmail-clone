@@ -1,18 +1,19 @@
 import { useState } from "react";
 import API_GMAIL from "../service/api";
 
-const useApi = (urlObject) => {
+
+const useApi = (urlObject , ) => {
     const [response,setResponse] = useState(null)
     const [error, setError] = useState(null)
     const [loading,setLoading] = useState(false)
-    const call = async (payload) => {
+    const call = async (payload, type='') => {
         setResponse(null)
         setError("");
         setLoading(true)
 
         try {
            
-            let response = await API_GMAIL(urlObject,payload)
+            let response = await API_GMAIL(urlObject,payload, type)
             setResponse(response.data)
             
         } catch (error) {

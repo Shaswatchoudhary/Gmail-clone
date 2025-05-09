@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { Box } from '@mui/material';
+
 import { useState } from 'react';
 import useApi from '../hooks/useApi';
 import { API_URL } from '../service/api.url';
@@ -53,12 +54,14 @@ const SendButton = styled(Button)`
     width: 100px;
 `
 const ComposeMail = ({openDialog,setOpenDialog}) => {
+    console.log('ComposeMail imports:', { Dialog, Typography, TextField, Button, CloseIcon, DeleteIcon, styled, InputBase, Box });
     const [data, setData] = useState({
         to: "",
         subject: "",
         body: ""
     })
     const sentEmailService = useApi(API_URL.saveSentEmail)
+    const draftEmailService = useApi(API_URL.saveDraftEmail)
    
 
     const config ={
@@ -98,12 +101,12 @@ const ComposeMail = ({openDialog,setOpenDialog}) => {
         image:"",
         name:"code with shaswat",
         isStarred:false,
-        type:"sent"
+        type:"draft"
        
     }
-    sentEmailService.call(payload)
+    draftEmailService.call(payload)
 
-    if(!sentEmailService.error){
+    if(!draftEmailService.error){
         setOpenDialog(false)
         setData({})
     }else {

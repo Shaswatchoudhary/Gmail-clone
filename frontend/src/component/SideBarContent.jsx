@@ -3,6 +3,8 @@ import CreateIcon from '@mui/icons-material/Create';
 import { SIDEBAR_DATA } from "../config/sidebar.config";
 import ComposeMail from "./composeMail";
 import { useState } from "react";
+import { useParams, NavLink } from "react-router-dom";
+import { routes } from "../routes/routes";
 const StyledButton = styled(Button)`
     background-color: #c2e7ff;
     color: #001d35;
@@ -43,6 +45,8 @@ const Container = styled(Box)`
 const SideBarContent = () => {
     const [openDialog, setOpenDialog] = useState(false);
 
+    const  {type} = useParams()
+
     const onComposeClick = () => {
         setOpenDialog(true);
     }
@@ -56,10 +60,11 @@ const SideBarContent = () => {
             
                <List>
                 {SIDEBAR_DATA.map(data => (
-                    <ListItem>
+                    <NavLink key={data.name} to={`${routes.emails.path}/${data.name.toLowerCase()}`}>
+                    <ListItem style={type === data.name.toLowerCase() ? {backgroundColor:"#d3e3fd",borderRadius:"0px 16px 16px 0px"}: {}}>
                         <data.icon fontSize="small"/>{data.title}
-
                     </ListItem>
+                    </NavLink>
                 ))}
                </List>
             <ComposeMail openDialog={openDialog} setOpenDialog={setOpenDialog}/>
