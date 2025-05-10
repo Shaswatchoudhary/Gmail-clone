@@ -15,14 +15,14 @@ const useApi = (urlObject , ) => {
            
             let response = await API_GMAIL(urlObject,payload, type)
             setResponse(response.data)
-            
+                
         } catch (error) {
             setError(error)
         }finally{
             setLoading(false)
         }
     }
-    return {response,error,loading,call}
+     return {response,error,loading,call}
 }
 
 export default useApi
