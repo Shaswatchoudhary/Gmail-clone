@@ -58,10 +58,10 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
     const saveDraftService = useApi(API_URLS.saveDraftEmails);
 
     const config = {
-        Username: process.env.REACT_APP_USERNAME,
-        Password: process.env.REACT_APP_PASSWORD,
-        Host: 'smtp.elasticemail.com',
-        Port: 2525,
+        Username: process.env.REACT_APP_EMAIL_USERNAME,
+        Password: process.env.REACT_APP_EMAIL_PASSWORD,
+        Host: process.env.REACT_APP_EMAIL_HOST,
+        Port: process.env.REACT_APP_EMAIL_PORT,
     }
 
     const onValueChange = (e) => {
