@@ -28,12 +28,11 @@ const API_GMAIL = async (serviceUrlObject, requestData = {}) => {
             method: serviceUrlObject.method,
             url,
             data: body,
+            // In your api.js file, update the headers
             headers: {
                 'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-                'Expires': '0',
-            },
+                'Accept': 'application/json'
+            }
         });
         
         console.log('API Response:', {
