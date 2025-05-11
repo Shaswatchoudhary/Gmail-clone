@@ -54,79 +54,61 @@ const SendButton = styled(Button)`
 
 const ComposeMail = ({ open, setOpenDrawer }) => {
     const [data, setData] = useState({});
+    const [isSending, setIsSending] = useState(false);
     const sentEmailService = useApi(API_URLS.saveSentEmails);
     const saveDraftService = useApi(API_URLS.saveDraftEmails);
-
-    const config = {
-        Username: process.env.REACT_APP_EMAIL_USERNAME,
-        Password: process.env.REACT_APP_EMAIL_PASSWORD,
-        Host: process.env.REACT_APP_EMAIL_HOST,
-        Port: process.env.REACT_APP_EMAIL_PORT,
-    }
 
     const onValueChange = (e) => {
         setData({ ...data, [e.target.name]: e.target.value })
     }
 
-    const sendEmail = async (e) => {
+    const sendEmail = async (e, isDraft = false) => {
         e.preventDefault();
-
-        if (window.Email) {
-            window.Email.send({
-                ...config,
-                To : data.to,
-                From : "smilejack42@gmail.com",
-                Subject : data.subject,
-                Body : data.body
-            }).then(
-                message => alert(message)
-            );
-        }
+        setIsSending(true);
 
         const payload = {
-            to : data.to,
-            from : "smilejack42@gmail.com",
-            subject : data.subject,
-            body : data.body,
+            to: data.to,
+            from: "smilejack42@gmail.com",
+            subject: data.subject,
+            body: data.body,
             date: new Date(),
             image: '',
             name: 'hello shaswat',
             starred: false,
-            type: 'sent'
+            type: isDraft ? 'drafts' : 'sent'
         }
 
-        sentEmailService.call(payload);
-
-        if (!sentEmailService.error) {
-            setOpenDrawer(false);
-            setData({});
-        } else {
-
-        }
-    }
-
-    const closeComposeMail = (e) => {
-        e.preventDefault();
-
-        const payload = {
-            to : data.to,
-            from : "smilejack42@gmail.com",
-            subject : data.subject,
-            body : data.body,
-            date: new Date(),
-            image: '',
-            name: 'hello shaswat',
-            starred: false,
-            type: 'drafts'
-        }
-
-        saveDraftService.call(payload);
-
-        if (!saveDraftService.error) {
-            setOpenDrawer(false);
-            setData({});
-        } else {
-
+        try {
+            console.log('Sending email with payload:', payload);
+            
+            let response;
+            if (isDraft) {
+                console.log('Saving as draft...');
+                response = await saveDraftService.call(payload);
+            } else {
+                console.log('Sending email...');
+                response = await sentEmailService.call(payload);
+            }
+            
+            console.log('API Response:', response);
+            
+            if (response && response.data) {
+                setOpenDrawer(false);
+                setData({});
+            } else {
+                const errorMsg = response?.error?.message || 'Failed to send email. Please try again.';
+                console.error('API Error:', errorMsg);
+                alert(errorMsg);
+            }
+        } catch (error) {
+            console.error('Error in sendEmail:', {
+                error,
+                message: error.message,
+                response: error.response?.data
+            });
+            alert(`Error: ${error.message || 'Failed to process your request'}`);
+        } finally {
+            setIsSending(false);
         }
     }
 
@@ -137,7 +119,7 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
         >
             <Header>
                 <Typography>New Message</Typography>
-                <Close fontSize="small" onClick={(e) => closeComposeMail(e)} />
+                <Close fontSize="small" onClick={(e) => sendEmail(e, true)} />
             </Header>
             <RecipientWrapper>
                 <InputBase placeholder='Recipients' name="to" onChange={(e) => onValueChange(e)} value={data.to} />
@@ -152,7 +134,18 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
                 value={data.body}
             />
             <Footer>
-                <SendButton onClick={(e) => sendEmail(e)}>Send</SendButton>
+                <SendButton 
+                    onClick={(e) => sendEmail(e, false)}
+                    disabled={isSending}
+                >
+                    {isSending ? 'Sending...' : 'Send'}
+                </SendButton>
+                <Button 
+                    onClick={(e) => sendEmail(e, true)}
+                    disabled={isSending}
+                >
+                    Save Draft
+                </Button>
                 <DeleteOutline onClick={() => setOpenDrawer(false)} />
             </Footer>
         </Dialog>
