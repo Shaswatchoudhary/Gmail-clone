@@ -49,7 +49,7 @@ const Emails = () => {
             </Box>
             <List>
                 {
-                    getEmailsService?.response?.map(email => (
+                    Array.isArray(getEmailsService?.response) && getEmailsService.response.map(email => (
                         <Email 
                             email={email} 
                             key={email.id}
