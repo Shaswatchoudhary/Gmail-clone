@@ -8,6 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {List } from "@mui/material"
 import { useEffect, useState } from "react"
 import Email from "./Email"
+import NoMails from "./common/nomails"
+import { EMPTY_TABS } from "../constraints/constraints"
 
 const Emails = () => {
 
@@ -18,6 +20,7 @@ const Emails = () => {
     const {type} = useParams()
     const getEmailsService = useApi(API_URL.getEmailFromType)
     const moveEmailsToBinService = useApi(API_URL.moveEmailsToBin)  
+    const deleteEmailService = useApi(API_URL.deleteEmail)
     useEffect(() => {
         getEmailsService.call({},type)
     },[type,refreshScreen])
@@ -30,22 +33,31 @@ const Emails = () => {
             setSelectedEmails([])
         }
     }
-   const deleteSelectedEmails = () => {
-       if (type === 'bin') {
-
-           // Handle bin emails differently if needed
-       } else {
-           moveEmailsToBinService.call({ selectedEmails })
-               .then(() => {
-                   // Refresh the emails list after deletion
-                   getEmailsService.call({}, type);
-                   setRefreshScreen(prevstate => !prevstate)
-               })
-               .catch(error => {
-                   console.error("Error moving emails to bin:", error);
-               });
-       }
-   };
+  const deleteSelectedEmails = () => {
+      if (type === 'bin') {
+          deleteEmailService.call({ selectedEmails })
+              .then(() => {
+                  // Refresh the emails list after deletion
+                  getEmailsService.call({}, type);
+                  setRefreshScreen(prevState => !prevState);
+                  setSelectedEmails([]);
+              })
+              .catch(error => {
+                  console.error("Error deleting emails:", error);
+              });
+      } else {
+          moveEmailsToBinService.call({ selectedEmails })
+              .then(() => {
+                  // Refresh the emails list after moving to bin
+                  getEmailsService.call({}, type);
+                  setRefreshScreen(prevState => !prevState);
+                  setSelectedEmails([]);
+              })
+              .catch(error => {
+                  console.error("Error moving emails to bin:", error);
+              });
+      }
+  };
    
     return (
         <>
@@ -69,6 +81,11 @@ const Emails = () => {
                 }
                 </List>
             
+            {
+                getEmailsService?.response?.length === 0 && (
+                    <NoMails message={EMPTY_TABS[type]}/>
+                )
+            }
             </Box>
             </Box>
         </>
