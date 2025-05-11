@@ -1,26 +1,28 @@
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export const API_URLS = {
     saveSentEmails: {
-        endpoint: 'save',
+        endpoint: `${BASE_URL}/save`,
         method: 'POST'
     },
     saveDraftEmails: {
-        endpoint: 'save-draft',
+        endpoint: `${BASE_URL}/save-draft`,
         method: 'POST'
     },
     getEmailFromType: {
-        endpoint: 'emails',
+        endpoint: `${BASE_URL}/emails`,  // Append /:type when calling
         method: 'GET'
     },
     toggleStarredMails: {
-        endpoint: 'starred',
+        endpoint: `${BASE_URL}/starred`,
         method: 'POST'
     },
     deleteEmails: {
-        endpoint: 'delete',
+        endpoint: `${BASE_URL}/delete`,
         method: 'DELETE'
     },
     moveEmailsToBin: {
-        endpoint: 'bin',
+        endpoint: `${BASE_URL}/bin`,
         method: 'POST'
     }
-}
+};
