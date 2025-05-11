@@ -64,6 +64,8 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
 
     const sendEmail = async (e, isDraft = false) => {
         e.preventDefault();
+        if (isSending) return;
+        
         setIsSending(true);
 
         const payload = {
@@ -79,7 +81,7 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
         }
 
         try {
-            console.log('Sending email with payload:', payload);
+            console.log('Preparing to send email with payload:', payload);
             
             let response;
             if (isDraft) {
@@ -92,21 +94,25 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
             
             console.log('API Response:', response);
             
-            if (response && response.data) {
+            if (response && response.status >= 200 && response.status < 300) {
                 setOpenDrawer(false);
                 setData({});
             } else {
-                const errorMsg = response?.error?.message || 'Failed to send email. Please try again.';
+                const errorMsg = response?.data?.message || 'Failed to send email. Please try again.';
                 console.error('API Error:', errorMsg);
                 alert(errorMsg);
             }
         } catch (error) {
             console.error('Error in sendEmail:', {
-                error,
-                message: error.message,
-                response: error.response?.data
+                error: error.message,
+                response: error.response?.data,
+                status: error.response?.status
             });
-            alert(`Error: ${error.message || 'Failed to process your request'}`);
+            
+            const errorMessage = error.response?.data?.message || 
+                               error.message || 
+                               'Failed to process your request. Please check your connection and try again.';
+            alert(`Error: ${errorMessage}`);
         } finally {
             setIsSending(false);
         }
