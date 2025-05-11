@@ -75,7 +75,7 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
             window.Email.send({
                 ...config,
                 To : data.to,
-                From : "codeforinterview03@gmail.com",
+                From : "smilejack42@gmail.com",
                 Subject : data.subject,
                 Body : data.body
             }).then(
@@ -85,7 +85,7 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
 
         const payload = {
             to : data.to,
-            from : "codeforinterview03@gmail.com",
+            from : "smilejack42@gmail.com",
             subject : data.subject,
             body : data.body,
             date: new Date(),
@@ -110,7 +110,7 @@ const ComposeMail = ({ open, setOpenDrawer }) => {
 
         const payload = {
             to : data.to,
-            from : "codeforinterview03@gmail.com",
+            from : "smilejack42@gmail.com",
             subject : data.subject,
             body : data.body,
             date: new Date(),
