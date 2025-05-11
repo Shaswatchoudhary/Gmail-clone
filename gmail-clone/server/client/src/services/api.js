@@ -9,13 +9,13 @@ const API_GMAIL = async (serviceUrlObject, requestData = {}) => {
     const baseUrl = API_URI.endsWith('/') ? API_URI.slice(0, -1) : API_URI;
     
     // Get the endpoint, ensuring it doesn't start with a slash
-    let endpoint = serviceUrlObject.endpoint;
+    let endpoint = serviceUrlObject.endpoint || '';
     if (endpoint.startsWith('/')) {
         endpoint = endpoint.slice(1);
     }
 
     // Construct the full URL
-    const url = `${baseUrl}/${endpoint}`;
+    const url = endpoint ? `${baseUrl}/${endpoint}` : baseUrl;
 
     console.log('API Request:', {
         method: serviceUrlObject.method,
